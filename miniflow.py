@@ -67,8 +67,9 @@ class Add(Neuron):
     def forward(self):
         """Set the value of this neuron (`self.value`) to the sum of it's inbound_nodes.  # NOQA
         """
+        self.value = 0
         for neuron in self.inbound_neurons:
-            self.value = neuron.value
+            self.value += neuron.value
 
 
 def topological_sort(feed_dict):
