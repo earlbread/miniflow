@@ -66,6 +66,58 @@ class Linear(Layer):
         self.value = np.dot(X, W) + b
 
 
+class Sigmoid(Layer):
+    """Represents a layer that performs the sigmoid activation function.
+    """
+    def __init__(self, layer):
+        # The base class constructor.
+        Layer.__init__(self, [layer])
+
+    def _sigmoid(self, x):
+        """This method is separate from `forward` because it
+        will be used with `backward` as well.
+
+        `x`: A numpy array-like object.
+        """
+        return 1. / (1. + np.exp(-x))
+
+    def forward(self):
+        """Perform the sigmoid function and set the value.
+        """
+        input_value = self.inbound_layers[0].value
+        self.value = self._sigmoid(input_value)
+
+
+class MSE(Layer):
+    def __init__(self, y, a):
+        """The mean squared error cost function.
+
+        Should be used as the last layer for a network.
+        """
+        # Call the base class' constructor.
+        Layer.__init__(self, [y, a])
+
+    def forward(self):
+        """
+        Calculates the mean squared error.
+        """
+        # NOTE: We m possible matrix/vector broadcast
+        # errors.
+        #
+        # For example, if we subtract an array of shape (3,) from an array of shape
+        # (3,1) we get an array of shape(3,3) as the result when we want
+        # an array of shape (3,1) instead.
+        #
+        # Making both arrays (3,1) insures the result is (3,1) and does
+        # an elementwise subtraction as expected.
+        y = self.inbound_layers[0].value.reshape(-1, 1)
+        a = self.inbound_layers[1].value.reshape(-1, 1)
+        m = self.inbound_layers[0].value.shape[0]
+
+        diff = y - a
+        self.value = np.mean(diff**2)
+
+
 def topological_sort(feed_dict):
     """Sort the layers in topological order using Kahn's Algorithm.
 
