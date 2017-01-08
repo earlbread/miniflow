@@ -19,14 +19,14 @@ W2_ = np.random.randn(n_hidden, 1)
 b2_ = np.zeros(1)
 
 # Neural network
-X, y = Input(), Input()
-W1, b1 = Input(), Input()
-W2, b2 = Input(), Input()
+X, y = Input(name='X'), Input(name='y')
+W1, b1 = Input(name='W1'), Input(name='b1')
+W2, b2 = Input(name='W2'), Input(name='b2')
 
-l1 = Linear(X, W1, b1)
-s1 = Sigmoid(l1)
-l2 = Linear(s1, W2, b2)
-cost = MSE(y, l2)
+l1 = Linear(X, W1, b1, name='Linear 1')
+s1 = Sigmoid(l1, name='Sigmoid 1')
+l2 = Linear(s1, W2, b2, name='Linear 2')
+cost = MSE(y, l2, name='MSE')
 
 feed_dict = {
     X: X_,
@@ -45,6 +45,9 @@ steps_per_epoch = m // batch_size
 
 graph = topological_sort(feed_dict)
 trainables = [W1, b1, W2, b2]
+
+for g in graph:
+    print(g.name)
 
 print("Total number of examples = {}".format(m))
 

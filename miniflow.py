@@ -47,13 +47,14 @@ class Layer:
 class Input(Layer):
     """A generic input into the network.
     """
-    def __init__(self):
+    def __init__(self, name=''):
         # The base class constructor has to run to set all
         # the properties here.
         #
         # The most important property on an Input is value.
         # self.value is set during `topological_sort` later.
         Layer.__init__(self)
+        self.name = name
 
     def forward(self):
         # Do nothing because nothing is calculated.
@@ -73,10 +74,11 @@ class Input(Layer):
 class Linear(Layer):
     """Represents a layer that performs a linear transform.
     """
-    def __init__(self, X, W, b):
+    def __init__(self, X, W, b, name=''):
         # The base class (Layer) constructor. Weights and bias
         # are treated like inbound layers.
         Layer.__init__(self, [X, W, b])
+        self.name = name
 
     def forward(self):
         """Performs the math behind a linear transform.
@@ -107,9 +109,10 @@ class Linear(Layer):
 class Sigmoid(Layer):
     """Represents a layer that performs the sigmoid activation function.
     """
-    def __init__(self, layer):
+    def __init__(self, layer, name=''):
         # The base class constructor.
         Layer.__init__(self, [layer])
+        self.name = name
 
     def _sigmoid(self, x):
         """This method is separate from `forward` because it
@@ -138,13 +141,14 @@ class Sigmoid(Layer):
 
 
 class MSE(Layer):
-    def __init__(self, y, a):
+    def __init__(self, y, a, name=''):
         """The mean squared error cost function.
 
         Should be used as the last layer for a network.
         """
         # Call the base class' constructor.
         Layer.__init__(self, [y, a])
+        self.name = name
 
     def forward(self):
         """
